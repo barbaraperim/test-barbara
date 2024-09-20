@@ -27,7 +27,6 @@
   &__button {
     height: 30px;
     padding: 25px;
-    margin-top: 30px;
     font-size: 20px;
     font-family: system-ui;
     cursor: pointer;
@@ -35,34 +34,12 @@
     font-weight: bold;
     background-color: white;
     color: brown;
+    margin: 30px;
   }
-}
 
-.lds-dual-ring,
-.lds-dual-ring:after {
-  box-sizing: border-box;
-}
-.lds-dual-ring {
-  display: inline-block;
-  width: 300px;
-  height: 300px;
-}
-.lds-dual-ring:after {
-  content: " ";
-  display: block;
-  width: 64px;
-  height: 64px;
-  margin: 120px;
-  border-radius: 50%;
-  border: 6.4px solid currentColor;
-  border-color: currentColor transparent currentColor transparent;
-  animation: lds-dual-ring 1.2s linear infinite;
-}
-@keyframes lds-dual-ring {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
+  &__bottom {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
   }
 }

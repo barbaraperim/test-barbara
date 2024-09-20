@@ -7,6 +7,14 @@ import {
   provideHttpClient,
   withInterceptorsFromDi,
 } from "@angular/common/http";
+import { provideState, provideStore } from "@ngrx/store";
+import { provideEffects } from "@ngrx/effects";
+import { DogPhotoEffects } from "./dogs/store/effects/dog-photo.effect";
+import {
+  dogPhotoFeatureKey,
+  dogPhotoReducer,
+} from "./dogs/store/reducers/dog-photo.reducer";
+import { provideStoreDevtools } from "@ngrx/store-devtools";
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -14,5 +22,9 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideClientHydration(),
     provideHttpClient(withInterceptorsFromDi()),
+    provideStore(),
+    provideState({ name: dogPhotoFeatureKey, reducer: dogPhotoReducer }),
+    provideEffects(DogPhotoEffects),
+    provideStoreDevtools({ maxAge: 95, connectInZone: true }),
   ],
 };

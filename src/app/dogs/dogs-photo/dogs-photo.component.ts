@@ -1,37 +1,55 @@
 import { Component } from "@angular/core";
 import { DogPhotoService } from "../services/dog-photo.service";
-import { SUCCESS_CODE } from "../services/models/dog-photo.model";
-
+import { DogPhoto, SUCCESS_CODE } from "../services/models/dog-photo.model";
+import { Observable } from "rxjs";
+import { Store } from "@ngrx/store";
+import { loadDogPhoto } from "../store/actions/dog-photo.action";
+import {
+  selectDogPhoto,
+  selectDogPhotoLoading,
+} from "../store/reducers/dog-photo.reducer";
 @Component({
   selector: "app-dogs-photo",
   templateUrl: "./dogs-photo.component.html",
   styleUrl: "./dogs-photo.component.scss",
 })
 export class DogsPhotoComponent {
-  dogPhotoSrc: string = "";
-  dogPhotoError: boolean = false;
-  dogPhotoLoading: boolean = true;
-  loadingPath = "/assets/loading.gif";
+  readonly SUCCESS_CODE = SUCCESS_CODE;
 
-  constructor(private dogsService: DogPhotoService) {}
+  firstDogPhotoSrc: string = "";
+  firstDogPhotoError: boolean = false;
+  firstDogPhotoLoading: boolean = true;
+
+  $dogPhoto: Observable<DogPhoto>;
+
+  readonly signalDogPhoto = this.store.selectSignal(selectDogPhoto);
+  readonly signalDogPhotoLoading = this.store.selectSignal(
+    selectDogPhotoLoading
+  );
+
+  constructor(private dogsService: DogPhotoService, private store: Store) {
+    this.$dogPhoto = this.dogsService.getDogPhoto();
+  }
 
   ngOnInit() {
-    this.dogPhotoLoading = true;
-    this.dogsService.getDogPhoto().subscribe(
-      (data) => {
+    this.store.dispatch(loadDogPhoto());
+
+    this.firstDogPhotoLoading = true;
+    this.$dogPhoto.subscribe({
+      next: (data) => {
         if (data.status === SUCCESS_CODE) {
-          this.dogPhotoSrc = data.message;
+          this.firstDogPhotoSrc = data.message;
         } else {
           this.setError();
         }
       },
-      () => {
+      error: () => {
         this.setError();
       },
-      () => {
-        this.dogPhotoLoading = false;
-      }
-    );
+      complete: () => {
+        this.firstDogPhotoLoading = false;
+      },
+    });
   }
 
   reloadPage() {
@@ -39,7 +57,7 @@ export class DogsPhotoComponent {
   }
 
   private setError() {
-    this.dogPhotoError = true;
-    this.dogPhotoLoading = false;
+    this.firstDogPhotoError = true;
+    this.firstDogPhotoLoading = false;
   }
 }

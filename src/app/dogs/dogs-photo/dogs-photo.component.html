@@ -1,19 +1,48 @@
 <div class="dogs-photo">
-  @if(dogPhotoLoading) {
-  <div *ngIf="dogPhotoLoading" class="lds-dual-ring"></div>
-  } @else { @if (dogPhotoError) {
-  <div class="dogs-photo__error">
-    {{ "OPS :(" }}
+  <!-- first photo -->
+
+  <div *ngIf="$dogPhoto | async as data; else loading">
+    <ng-template *ngIf="data.status !== SUCCESS_CODE; else successTemplate">
+      <div class="dogs-photo__error">
+        {{ "OPS :(" }}
+      </div>
+    </ng-template>
+
+    <ng-template #successTemplate>
+      <img [src]="data.message" />
+    </ng-template>
   </div>
-  } @else {
-  <img [src]="dogPhotoSrc" />
-  }
+
+  <ng-template #loading>
+    <app-spinner></app-spinner>
+  </ng-template>
+
   <div (click)="reloadPage()" class="dogs-photo__button">
-    {{
-      dogPhotoError
-        ? "Clique aqui para tentar novamente"
-        : "Clique aqui para outra foto de cachorro!"
-    }}
+    Clique aqui para ver outras fotos!
   </div>
-  }
+
+  <div class="dogs-photo__bottom">
+    <!-- second photo -->
+    @if(firstDogPhotoLoading) {
+    <app-spinner></app-spinner>
+    } @else { @if (firstDogPhotoError) {
+    <div class="dogs-photo__error">
+      {{ "OPS :(" }}
+    </div>
+    } @else {
+    <img [src]="firstDogPhotoSrc" />
+    } }
+
+    <!-- third photo -->
+
+    @if(signalDogPhotoLoading()) {
+    <app-spinner></app-spinner>
+    } @else { @if (signalDogPhoto().status !== SUCCESS_CODE ) {
+    <div class="dogs-photo__error">
+      {{ "OPS :(" }}
+    </div>
+    } @else {
+    <img [src]="signalDogPhoto().message" />
+    } }
+  </div>
 </div>
