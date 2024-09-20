@@ -1,3 +1,19 @@
 <div class="dogs-photo">
+  @if(dogPhotoLoading) {
+  <div *ngIf="dogPhotoLoading" class="lds-dual-ring"></div>
+  } @else { @if (dogPhotoError) {
+  <div class="dogs-photo__error">
+    {{ "OPS :(" }}
+  </div>
+  } @else {
   <img [src]="dogPhotoSrc" />
+  }
+  <div (click)="reloadPage()" class="dogs-photo__button">
+    {{
+      dogPhotoError
+        ? "Clique aqui para tentar novamente"
+        : "Clique aqui para outra foto de cachorro!"
+    }}
+  </div>
+  }
 </div>
